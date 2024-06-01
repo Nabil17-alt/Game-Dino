@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Game Dino</title>
+    <link rel="icon" href="images/run2.png" />
+    <link rel="stylesheet" type="text/css" href="style.css" />
+  </head>
+  <body>
+    <h2>Game Dino</h2>
+    <h3>Skor : <span id="score">0</span></h3>
+    <div id="board" style="background-position: 0px">
+      <div id="area">
+        <div id="dino"></div>
+        <div id="box" style="margin-left: 600px"></div>
+      </div>
+    </div>
+
+    <script type="text/javascript">
+      var isMoving = true;
+
+      function setBackgroundMoving() {
+        if (isMoving) {
+          setTimeout(function () {
+            var bg = document.getElementById("board");
+            bg.style.backgroundPosition =
+              parseInt(bg.style.backgroundPosition.replace("px", "")) -
+              1 +
+              "px";
+            document.getElementById("score").innerHTML =
+              parseInt(document.getElementById("score").innerHTML) + 1;
+            setBackgroundMoving();
+          }, 5);
+        }
+      }
+
+      setBackgroundMoving();
+
+      function setBoxMoving() {
+        var box = document.getElementById("box"),
+          dino = document.getElementById("dino");
+
+        setTimeout(function () {
+          box.style.marginLeft =
+            parseInt(box.style.marginLeft.replace("px", "")) - 1 + "px";
+
+          if (parseInt(box.style.marginLeft.replace("px", "")) < -100) {
+            box.style.marginLeft = "600px";
+          }
+
+          if (
+            dino.offsetTop + 50 >= box.offsetTop &&
+            dino.offsetLeft + 50 >= box.offsetLeft &&
+            dino.offsetTop + 50 <= box.offsetTop + 50 &&
+            dino.offsetLeft <= box.offsetLeft + 50
+          ) {
+            
+            Swal.fire({
+              title: "Game Dino",
+              text: "Permainan berakhir! Skor anda : " + document.getElementById("score").innerHTML,
+              imageUrl: "images/run2.png",
+              imageWidth: 100,
+              imageHeight: 100,
+              imageAlt: "Custom image",
+            });
+            dino.setAttribute("class", "freeze");
+            isMoving = false;
+          } else {
+            setBoxMoving();
+          }
+        }, 5);
+      }
+
+      setBoxMoving();
+
+      function jump() {
+        var dino = document.getElementById("dino");
+        dino.style.marginTop = "30px";
+        dino.setAttribute("class", "freeze");
+
+        setTimeout(function () {
+          dino.style.marginTop = "170px";
+          dino.setAttribute("class", "");
+        }, 1000);
+      }
+
+      window.addEventListener("keyup", function (e) {
+        if (e.keyCode == 32) {
+          jump();
+        }
+      });
+
+      window.addEventListener("touchstart", function (e) {
+        jump();
+      });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  </body>
+</html>
